@@ -109,9 +109,28 @@ def train_models():
         results[name] = metrics
         print_metrics(name, metrics)
 
+    # =========================
+    # Final evaluation on test set
+    # =========================
+    
+    best_model_name = max(
+        results,
+        key=lambda m: results[m]["recall"]
+    )
+
+    best_model = models[best_model_name]
+
+    test_metrics = evaluate_model(best_model, X_test, y_test)
+
+    print("\nFinal evaluation on test set:")
+    print_metrics(best_model_name, test_metrics)
+
     return results, models, (X_test, y_test)
+
 
 
 if __name__ == "__main__":
     results, models, _ = train_models()
     print("\nTraining completed with hyperparameter optimization.")
+    
+    
