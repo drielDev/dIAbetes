@@ -84,13 +84,6 @@ ferramenta de apoio à decisão clínica.
 
 ---
 
-## Executando com Docker
-
-```bash
-docker build -t diabetes-ml .
-docker run --rm diabetes-ml
-```
-
 ## Como Executar o Projeto
 
 ```bash
