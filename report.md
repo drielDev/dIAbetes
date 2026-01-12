@@ -43,10 +43,11 @@ Em seguida, os dados foram separados em conjuntos de treino, validação e teste
 Por fim, foi construído um pipeline de pré-processamento utilizando normalização via StandardScaler, assegurando que todas as variáveis numéricas estivessem na mesma escala, o que é fundamental para diversos algoritmos de Machine Learning.
 
 
-
 ## 6. Modelagem
 
 Serão utilizados diferentes algoritmos de classificação para o diagnóstico de diabetes, com o objetivo de comparar seus desempenhos e selecionar o modelo mais adequado ao contexto do problema.
+
+Além dos modelos básicos, foram aplicadas técnicas de otimização de hiperparâmetros utilizando Grid Search e Randomized Search. Essas abordagens permitiram identificar combinações mais adequadas de parâmetros, priorizando a métrica de recall, considerada crítica no contexto médico. Também foi avaliado o modelo SGDClassifier, ampliando a comparação entre diferentes abordagens lineares e baseadas em árvores.
 
 
 ## 7. Avaliação

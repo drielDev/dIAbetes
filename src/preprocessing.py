@@ -1,7 +1,7 @@
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
-
-from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -9,17 +9,17 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
 
-def load_data(path: str) -> pd.DataFrame:
+# Resolve project root dynamically
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data" / "raw"
+
+
+def load_data(filename: str) -> pd.DataFrame:
     """
     Load diabetes dataset from CSV file.
     """
-    path_obj = Path(path)
-    if not path_obj.exists():
-        raise FileNotFoundError(
-            f"CSV file not found: {path_obj} (resolved: {path_obj.resolve()})"
-        )
-
-    return pd.read_csv(path_obj)
+    file_path = DATA_DIR / filename
+    return pd.read_csv(file_path)
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -88,7 +88,7 @@ def build_preprocessing_pipeline(features: list):
     return preprocessor
 
 
-def preprocess_data(csv_path: str):
+def preprocess_data(filename: str = "diabetes.csv"):
     """
     Full preprocessing pipeline:
     - load data
@@ -96,7 +96,7 @@ def preprocess_data(csv_path: str):
     - split dataset
     - scale features
     """
-    df = load_data(csv_path)
+    df = load_data(filename)
     df = clean_data(df)
 
     X = df.drop("Outcome", axis=1)
@@ -122,9 +122,6 @@ def preprocess_data(csv_path: str):
 
 
 if __name__ == "__main__":
-    PROJECT_ROOT = Path(__file__).resolve().parents[2]
-    DATA_PATH = PROJECT_ROOT / "data" / "raw" / "diabetes.csv"
-
     (
         X_train,
         X_val,
@@ -132,8 +129,8 @@ if __name__ == "__main__":
         y_train,
         y_val,
         y_test,
-        preprocessor
-    ) = preprocess_data(DATA_PATH)
+        _
+    ) = preprocess_data()
 
     print("Preprocessing completed successfully.")
     print(f"Train shape: {X_train.shape}")
