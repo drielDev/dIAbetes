@@ -52,7 +52,12 @@ Além dos modelos básicos, foram aplicadas técnicas de otimização de hiperpa
 
 ## 7. Avaliação
 
-Os modelos serão avaliados utilizando métricas como acurácia, precisão, recall e F1-score, considerando a importância do recall no contexto médico, onde falsos negativos podem trazer riscos à saúde do paciente.
+Após o treinamento e validação dos modelos, a avaliação final foi realizada utilizando exclusivamente o conjunto de teste, garantindo uma estimativa imparcial do desempenho.
+
+O modelo com melhor desempenho em termos de recall foi selecionado, considerando a importância de minimizar falsos negativos no contexto médico. As métricas finais avaliadas incluíram acurácia, precisão, recall e F1-score.
+
+Além das métricas quantitativas, foi analisada a matriz de confusão, permitindo compreender os tipos de erros cometidos pelo modelo. Observou-se que o modelo apresentou bom equilíbrio entre sensibilidade e desempenho geral, mostrando-se adequado como ferramenta de apoio à decisão clínica.
+
 
 
 ## 8. Interpretação do Modelo
