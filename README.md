@@ -62,12 +62,16 @@ A análise de interpretabilidade com SHAP demonstrou que o nível de glicose, o 
 e a idade são as variáveis mais influentes nas previsões do modelo, em conformidade
 com o conhecimento clínico existente.
 
+
 **Figura 1 — SHAP Summary Plot**
 Distribuição global da importância das variáveis no modelo final.
+
 ![SHAP Summary](assets/results/shap_summary.png)
 
-**Figura 2 — Matriz de Confusão**
+
+**Figura 2 — Matriz de Confusão** 
 Resultados do modelo SGDClassifier no conjunto de teste.
+
 ![Confusion Matrix (Test Set)](assets/results/confusion_matrix_test.png)
 
 ---
@@ -79,13 +83,6 @@ substitui a avaliação médica profissional e deve ser utilizado apenas como
 ferramenta de apoio à decisão clínica.
 
 ---
-
-## Executando com Docker
-
-```bash
-docker build -t diabetes-ml .
-docker run --rm diabetes-ml
-```
 
 ## Como Executar o Projeto
 
