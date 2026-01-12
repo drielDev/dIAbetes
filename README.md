@@ -64,14 +64,14 @@ com o conhecimento clínico existente.
 
 
 **Figura 1 — SHAP Summary Plot**
-
 Distribuição global da importância das variáveis no modelo final.
+
 ![SHAP Summary](assets/results/shap_summary.png)
 
 
 **Figura 2 — Matriz de Confusão** 
-
 Resultados do modelo SGDClassifier no conjunto de teste.
+
 ![Confusion Matrix (Test Set)](assets/results/confusion_matrix_test.png)
 
 ---
