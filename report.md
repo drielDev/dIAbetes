@@ -52,11 +52,11 @@ Além dos modelos básicos, foram aplicadas técnicas de otimização de hiperpa
 
 ## 7. Avaliação
 
-Após o treinamento e validação dos modelos, a avaliação final foi realizada utilizando exclusivamente o conjunto de teste, garantindo uma estimativa imparcial do desempenho.
+A avaliação final dos modelos foi realizada utilizando o conjunto de teste, reservado exclusivamente para mensurar a capacidade de generalização do modelo selecionado. 
+A escolha do modelo final considerou principalmentea métrica de recall, devido à relevância clínica de minimizar falsos negativos no diagnóstico de diabetes.
 
-O modelo com melhor desempenho em termos de recall foi selecionado, considerando a importância de minimizar falsos negativos no contexto médico. As métricas finais avaliadas incluíram acurácia, precisão, recall e F1-score.
+A matriz de confusão e o relatório de classificação evidenciaram que o modelo selecionado apresentou desempenho consistente, mantendo equilíbrio entre sensibilidade e precisão, o que reforça sua adequação como sistema de apoio à decisão médica.
 
-Além das métricas quantitativas, foi analisada a matriz de confusão, permitindo compreender os tipos de erros cometidos pelo modelo. Observou-se que o modelo apresentou bom equilíbrio entre sensibilidade e desempenho geral, mostrando-se adequado como ferramenta de apoio à decisão clínica.
 
 
 
