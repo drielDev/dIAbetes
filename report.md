@@ -34,7 +34,14 @@ A análise de correlação evidenciou que a variável glicose possui a maior cor
 
 ## 5. Pré-processamento
 
-Nesta etapa, serão aplicadas técnicas de limpeza e transformação dos dados, incluindo o tratamento de valores inconsistentes, normalização das variáveis numéricas e construção de um pipeline de pré-processamento para preparação dos dados para os modelos de Machine Learning.
+A etapa de pré-processamento teve como objetivo preparar os dados para a modelagem, garantindo qualidade, consistência e reprodutibilidade.
+
+Inicialmente, foram tratados valores inconsistentes identificados na análise exploratória, onde o valor zero não representa uma condição fisiológica válida em variáveis clínicas como glicose, pressão arterial, insulina e índice de massa corporal. Esses valores foram substituídos por valores ausentes e posteriormente imputados utilizando a mediana de cada variável.
+
+Em seguida, os dados foram separados em conjuntos de treino, validação e teste, respeitando a proporção das classes por meio de amostragem estratificada. Essa abordagem evita viés na avaliação dos modelos.
+
+Por fim, foi construído um pipeline de pré-processamento utilizando normalização via StandardScaler, assegurando que todas as variáveis numéricas estivessem na mesma escala, o que é fundamental para diversos algoritmos de Machine Learning.
+
 
 
 ## 6. Modelagem
@@ -58,4 +65,6 @@ Ao final do projeto, será apresentada uma análise crítica dos resultados obti
 
 
 ## 10. Considerações Éticas
-Discussão sobre o uso responsável de IA na área da saúde.
+
+Este projeto tem caráter exclusivamente acadêmico e experimental. O modelo desenvolvido não substitui a avaliação médica profissional, sendo utilizado apenas como ferramenta de apoio à decisão clínica. O uso responsável de sistemas de Inteligência Artificial na área da saúde é fundamental para garantir segurança, ética e confiabilidade nos diagnósticos.
+
