@@ -40,12 +40,13 @@ def train_models():
     # =========================
     # Logistic Regression (Grid Search)
     # =========================
-    log_reg = LogisticRegression(max_iter=2000)
+    log_reg = LogisticRegression(
+        solver="lbfgs",
+        max_iter=2000
+    )
 
     log_reg_params = {
-        "C": [0.01, 0.1, 1, 10],
-        "penalty": ["l2"],
-        "solver": ["lbfgs"]
+        "C": [0.01, 0.1, 1, 10]
     }
 
     log_reg_grid = GridSearchCV(
