@@ -4,6 +4,15 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 from preprocessing import preprocess_data
+from genetic_optimizer import genetic_algorithm, run_ga_experiments
+
+
+RANDOM_STATE = 42
+GA_SGD_EXPERIMENTS = [
+    {"population_size": 20, "generations": 20, "mutation_rate": 0.10},
+    {"population_size": 30, "generations": 25, "mutation_rate": 0.20},
+    {"population_size": 40, "generations": 30, "mutation_rate": 0.30}
+]
 
 
 def evaluate_model(model, X, y):
@@ -26,6 +35,119 @@ def print_metrics(model_name: str, metrics: dict):
         print(f"{metric.capitalize()}: {value:.4f}")
 
 
+def train_baseline_models(X_train, y_train):
+    log_reg_original = LogisticRegression(
+        solver="lbfgs",
+        max_iter=2000,
+        random_state=RANDOM_STATE
+    )
+    log_reg_original.fit(X_train, y_train)
+
+    tree_original = DecisionTreeClassifier(random_state=RANDOM_STATE)
+    tree_original.fit(X_train, y_train)
+
+    sgd_original = SGDClassifier(
+        loss="log_loss",
+        max_iter=2000,
+        random_state=RANDOM_STATE
+    )
+    sgd_original.fit(X_train, y_train)
+
+    return {
+        "Logistic Regression (Original)": log_reg_original,
+        "Decision Tree (Original)": tree_original,
+        "SGD Classifier (Original)": sgd_original
+    }
+
+
+def train_search_optimized_models(X_train, y_train):
+    log_reg_grid = GridSearchCV(
+        LogisticRegression(solver="lbfgs", max_iter=2000),
+        {"C": [0.01, 0.1, 1, 10]},
+        scoring="recall",
+        cv=5,
+        n_jobs=-1
+    )
+    log_reg_grid.fit(X_train, y_train)
+
+    tree_random = RandomizedSearchCV(
+        DecisionTreeClassifier(random_state=RANDOM_STATE),
+        {
+            "max_depth": [None, 5, 10, 20, 30],
+            "min_samples_split": [2, 5, 10, 20],
+            "min_samples_leaf": [1, 2, 5, 10]
+        },
+        n_iter=20,
+        scoring="recall",
+        cv=5,
+        random_state=RANDOM_STATE,
+        n_jobs=-1
+    )
+    tree_random.fit(X_train, y_train)
+
+    return {
+        "Logistic Regression (GridSearch)": log_reg_grid.best_estimator_,
+        "Decision Tree (RandomSearch)": tree_random.best_estimator_
+    }
+
+
+def train_ga_optimized_models(X_train, y_train, X_val, y_val):
+    sgd_experiments, best_sgd_experiment = run_ga_experiments(
+        model_type="sgd",
+        X_train=X_train,
+        y_train=y_train,
+        X_val=X_val,
+        y_val=y_val,
+        experiment_configs=GA_SGD_EXPERIMENTS,
+        selection_metric="recall",
+        verbose=True
+    )
+
+    print("\nResumo dos 3 experimentos de AG (SGD):")
+    for experiment in sgd_experiments:
+        metrics = experiment["val_metrics"]
+        cfg = experiment["config"]
+        print(
+            f"Exp {experiment['experiment_id']} | "
+            f"pop={cfg['population_size']} gens={cfg['generations']} "
+            f"mut={cfg['mutation_rate']:.2f} | "
+            f"acc={metrics['accuracy']:.4f} "
+            f"recall={metrics['recall']:.4f} "
+            f"f1={metrics['f1_score']:.4f} "
+            f"fitness={experiment['fitness']:.4f}"
+        )
+
+    log_reg_ga, _, _, _ = genetic_algorithm(
+        model_type="logistic_regression",
+        X_train=X_train,
+        y_train=y_train,
+        X_val=X_val,
+        y_val=y_val,
+        population_size=20,
+        generations=20,
+        mutation_rate=0.2,
+        verbose=True
+    )
+
+    tree_ga, _, _, _ = genetic_algorithm(
+        model_type="decision_tree",
+        X_train=X_train,
+        y_train=y_train,
+        X_val=X_val,
+        y_val=y_val,
+        population_size=20,
+        generations=20,
+        mutation_rate=0.2,
+        verbose=True
+    )
+
+    return {
+        "Logistic Regression (Genetic Algorithm)": log_reg_ga,
+        "Decision Tree (Genetic Algorithm)": tree_ga,
+        "SGD Classifier (Genetic Algorithm - Best of 3)": best_sgd_experiment["model"]
+    }
+
+
 def train_models():
     (
         X_train,
@@ -37,70 +159,10 @@ def train_models():
         _
     ) = preprocess_data()
 
-    # =========================
-    # Logistic Regression (Grid Search)
-    # =========================
-    log_reg = LogisticRegression(
-        solver="lbfgs",
-        max_iter=2000
-    )
-
-    log_reg_params = {
-        "C": [0.01, 0.1, 1, 10]
-    }
-
-    log_reg_grid = GridSearchCV(
-        log_reg,
-        log_reg_params,
-        scoring="recall",
-        cv=5,
-        n_jobs=-1
-    )
-
-    log_reg_grid.fit(X_train, y_train)
-
-    best_log_reg = log_reg_grid.best_estimator_
-
-    # =========================
-    # Decision Tree (Random Search)
-    # =========================
-    tree = DecisionTreeClassifier(random_state=42)
-
-    tree_params = {
-        "max_depth": [None, 5, 10, 20, 30],
-        "min_samples_split": [2, 5, 10, 20],
-        "min_samples_leaf": [1, 2, 5, 10]
-    }
-
-    tree_random = RandomizedSearchCV(
-        tree,
-        tree_params,
-        n_iter=20,
-        scoring="recall",
-        cv=5,
-        random_state=42,
-        n_jobs=-1
-    )
-
-    tree_random.fit(X_train, y_train)
-
-    best_tree = tree_random.best_estimator_
-
-    # =========================
-    # SGD Classifier
-    # =========================
-    sgd = SGDClassifier(
-        loss="log_loss",
-        max_iter=2000,
-        random_state=42
-    )
-
-    sgd.fit(X_train, y_train)
-
     models = {
-        "Logistic Regression (GridSearch)": best_log_reg,
-        "Decision Tree (RandomSearch)": best_tree,
-        "SGD Classifier": sgd
+        **train_baseline_models(X_train, y_train),
+        **train_search_optimized_models(X_train, y_train),
+        **train_ga_optimized_models(X_train, y_train, X_val, y_val)
     }
 
     results = {}

@@ -52,10 +52,33 @@ Foram utilizados diferentes algoritmos de classificação para o diagnóstico de
 Além dos modelos básicos, foram aplicadas técnicas de otimização de hiperparâmetros utilizando Grid Search e Randomized Search. Essas abordagens permitiram identificar combinações mais adequadas de parâmetros, priorizando a métrica de recall, considerada crítica no contexto médico. Também foi avaliado o modelo SGDClassifier, ampliando a comparação entre diferentes abordagens lineares e baseadas em árvores.
 
 
+## 6.1 Melhoria do Modelo com Algoritmo Genético
+
+Como etapa adicional de melhoria, foi implementada uma estratégia de otimização de hiperparâmetros com Algoritmo Genético aplicada aos modelos de diagnóstico desenvolvidos no projeto (Regressão Logística, Árvore de Decisão e SGDClassifier).
+
+Nessa abordagem, cada indivíduo da população representa um conjunto de hiperparâmetros de um modelo específico. Foram definidas codificações de genes adequadas para cada algoritmo, incluindo parâmetros contínuos, discretos e categóricos (por exemplo: `C`, `solver` e `max_iter` para Regressão Logística; `max_depth`, `min_samples_split`, `min_samples_leaf` e `criterion` para Árvore; `alpha`, `penalty`, `max_iter` e `eta0` para SGD).
+
+O processo evolutivo foi estruturado com inicialização da população, seleção dos indivíduos mais aptos, crossover entre pais e mutação controlada dos hiperparâmetros.
+
+A função fitness foi definida com múltiplas métricas de desempenho no conjunto de validação, combinando acurácia, recall e F1-score em uma pontuação ponderada, de forma a manter foco clínico no recall sem perder equilíbrio global.
+
+Para atender ao requisito experimental, foram realizados 3 experimentos de AG para o SGDClassifier com diferentes configurações:
+
+- Experimento 1: população = 20, gerações = 20, mutação = 0.10
+- Experimento 2: população = 30, gerações = 25, mutação = 0.20
+- Experimento 3: população = 40, gerações = 30, mutação = 0.30
+
+O melhor resultado foi obtido no Experimento 3, que apresentou o maior recall no conjunto de validação e foi utilizado para compor a comparação final com os modelos originais e demais versões otimizadas.
+
+
 ## 7. Avaliação
 
 A avaliação final dos modelos foi realizada utilizando o conjunto de teste, reservado exclusivamente para mensurar a capacidade de generalização do modelo selecionado. 
 A escolha do modelo final considerou principalmente a métrica de recall, devido à relevância clínica de minimizar falsos negativos no diagnóstico de diabetes.
+
+Com a inclusão da abordagem evolutiva, a etapa de avaliação também passou a considerar o desempenho do SGDClassifier otimizado por Algoritmo Genético, permitindo uma comparação direta entre a versão padrão e a versão otimizada do mesmo algoritmo.
+
+Além disso, também foi realizada a comparação entre versões originais e versões otimizadas por AG para Regressão Logística e Árvore de Decisão, ampliando a análise de melhoria dos modelos.
 
 A matriz de confusão e o relatório de classificação evidenciaram que o modelo selecionado apresentou desempenho consistente, mantendo equilíbrio entre sensibilidade e precisão, o que reforça sua adequação como sistema de apoio à decisão médica.
 
@@ -78,6 +101,10 @@ Esses achados estão alinhados com o conhecimento clínico sobre o diabetes, ref
 
 Os resultados obtidos demonstram que modelos de Machine Learning podem ser utilizados como ferramentas eficazes de apoio à decisão no diagnóstico de diabetes. 
 O modelo SGDClassifier apresentou o melhor desempenho em termos de recall, métrica priorizada devido à relevância clínica de minimizar falsos negativos.
+
+A implementação de otimização por Algoritmo Genético contribuiu para ampliar a análise de melhoria do modelo, adicionando uma abordagem evolutiva ao processo de busca de hiperparâmetros com função fitness multi-métrica.
+
+Os experimentos com diferentes configurações de AG mostraram impacto direto do tamanho da população, número de gerações e taxa de mutação no desempenho final, reforçando a importância do ajuste desses parâmetros no processo evolutivo.
 
 A análise de interpretabilidade indicou que variáveis como nível de glicose, índice de massa corporal (BMI) e idade são os principais fatores que influenciam as previsões do modelo, em conformidade com o conhecimento clínico existente.
 

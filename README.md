@@ -54,9 +54,10 @@ Variável alvo:
 
 ## Resultados
 
-Os resultados indicam que o modelo SGDClassifier apresentou o melhor desempenho
-em termos de recall no conjunto de teste, métrica priorizada devido à importância
-clínica de minimizar falsos negativos.
+Os resultados indicam que a seleção do melhor modelo foi realizada com base no
+recall (conjunto de validação), métrica priorizada devido à importância clínica
+de minimizar falsos negativos. Na execução atual, o melhor desempenho no teste
+foi do modelo SGD Classifier (Genetic Algorithm - Best of 3).
 
 A análise de interpretabilidade com SHAP demonstrou que o nível de glicose, o BMI
 e a idade são as variáveis mais influentes nas previsões do modelo, em conformidade
