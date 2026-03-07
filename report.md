@@ -52,10 +52,23 @@ Foram utilizados diferentes algoritmos de classificação para o diagnóstico de
 Além dos modelos básicos, foram aplicadas técnicas de otimização de hiperparâmetros utilizando Grid Search e Randomized Search. Essas abordagens permitiram identificar combinações mais adequadas de parâmetros, priorizando a métrica de recall, considerada crítica no contexto médico. Também foi avaliado o modelo SGDClassifier, ampliando a comparação entre diferentes abordagens lineares e baseadas em árvores.
 
 
+## 6.1 Melhoria do Modelo com Algoritmo Genético
+
+Como etapa adicional de melhoria, foi implementada uma estratégia de otimização de hiperparâmetros com Algoritmo Genético aplicada ao SGDClassifier.
+
+Nessa abordagem, cada indivíduo da população representa um conjunto de hiperparâmetros do modelo (`alpha`, `penalty`, `max_iter` e `eta0`). A qualidade de cada indivíduo foi medida por meio da métrica de recall no conjunto de validação, mantendo coerência com o objetivo clínico de reduzir falsos negativos.
+
+O processo evolutivo foi estruturado com inicialização da população, seleção dos indivíduos mais aptos, crossover entre pais e mutação controlada dos hiperparâmetros. Além disso, limites válidos foram aplicados durante a mutação para evitar configurações inviáveis.
+
+Ao final das gerações, o melhor conjunto de hiperparâmetros encontrado foi utilizado para treinar uma versão otimizada do SGDClassifier, que passou a compor a comparação final de modelos junto às abordagens com Grid Search e Randomized Search.
+
+
 ## 7. Avaliação
 
 A avaliação final dos modelos foi realizada utilizando o conjunto de teste, reservado exclusivamente para mensurar a capacidade de generalização do modelo selecionado. 
 A escolha do modelo final considerou principalmente a métrica de recall, devido à relevância clínica de minimizar falsos negativos no diagnóstico de diabetes.
+
+Com a inclusão da abordagem evolutiva, a etapa de avaliação também passou a considerar o desempenho do SGDClassifier otimizado por Algoritmo Genético, permitindo uma comparação direta entre a versão padrão e a versão otimizada do mesmo algoritmo.
 
 A matriz de confusão e o relatório de classificação evidenciaram que o modelo selecionado apresentou desempenho consistente, mantendo equilíbrio entre sensibilidade e precisão, o que reforça sua adequação como sistema de apoio à decisão médica.
 
@@ -78,6 +91,8 @@ Esses achados estão alinhados com o conhecimento clínico sobre o diabetes, ref
 
 Os resultados obtidos demonstram que modelos de Machine Learning podem ser utilizados como ferramentas eficazes de apoio à decisão no diagnóstico de diabetes. 
 O modelo SGDClassifier apresentou o melhor desempenho em termos de recall, métrica priorizada devido à relevância clínica de minimizar falsos negativos.
+
+A implementação de otimização por Algoritmo Genético contribuiu para ampliar a análise de melhoria do modelo, adicionando uma abordagem evolutiva ao processo de busca de hiperparâmetros.
 
 A análise de interpretabilidade indicou que variáveis como nível de glicose, índice de massa corporal (BMI) e idade são os principais fatores que influenciam as previsões do modelo, em conformidade com o conhecimento clínico existente.
 
