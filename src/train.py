@@ -4,6 +4,7 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 from preprocessing import preprocess_data
+from genetic_optimizer import genetic_algorithm
 
 
 def evaluate_model(model, X, y):
@@ -97,10 +98,21 @@ def train_models():
 
     sgd.fit(X_train, y_train)
 
+    # =========================
+    # SGD Classifier (Genetic Algorithm)
+    # =========================
+    sgd_ga, _, _ = genetic_algorithm(
+        X_train=X_train,
+        y_train=y_train,
+        X_val=X_val,
+        y_val=y_val
+    )
+
     models = {
         "Logistic Regression (GridSearch)": best_log_reg,
         "Decision Tree (RandomSearch)": best_tree,
-        "SGD Classifier": sgd
+        "SGD Classifier": sgd,
+        "SGD Classifier (Genetic Algorithm)": sgd_ga
     }
 
     results = {}
