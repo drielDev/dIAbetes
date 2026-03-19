@@ -6,7 +6,11 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, recall_score, f1_score
 
 from preprocessing import preprocess_data
+# Importação de ferramentas de monitoramento para rastrear performance do algoritmo genético
+from monitoring import get_logger, PerformanceTracker
 
+# Logger específico para o otimizador genético
+logger = get_logger("genetic_optimizer")
 
 SEED = 42
 random.seed(SEED)
@@ -166,6 +170,12 @@ def genetic_algorithm(
     X_train, y_train, X_val, y_val = get_data_splits(X_train, y_train, X_val, y_val)
     validate_model_type(model_type)
 
+    # Registro do início do algoritmo genético com os parâmetros configurados
+    logger.info(
+        f"Starting GA for '{model_type}' — "
+        f"pop={population_size}, gens={generations}, mut={mutation_rate}"
+    )
+
     param_space = PARAM_SPACES[model_type]
     population = create_population(population_size, param_space)
 
@@ -208,6 +218,12 @@ def genetic_algorithm(
         if verbose:
             print(f"[{model_type}] Geração {gen} - Melhor fitness: {best_score:.4f}")
 
+    # Log do resultado final do GA com as melhores métricas encontradas
+    logger.info(
+        f"GA finished for '{model_type}' — best fitness: {best_score:.4f}, "
+        f"metrics: {best_metrics}"
+    )
+
     best_model = build_model(model_type, best_individual)
     best_model.fit(X_train, y_train)
     return best_model, best_individual, best_score, best_metrics
@@ -235,6 +251,8 @@ def run_ga_experiments(
         ]
 
     experiment_results = []
+    # Log do número de experimentos a serem executados para comparação
+    logger.info(f"Running {len(experiment_configs)} GA experiments for '{model_type}'")
 
     for idx, cfg in enumerate(experiment_configs, start=1):
         if verbose:
@@ -244,19 +262,21 @@ def run_ga_experiments(
                 f"mutation={cfg['mutation_rate']}"
             )
 
-        model, params, fitness_score, metrics = genetic_algorithm(
-            model_type=model_type,
-            X_train=X_train,
-            y_train=y_train,
-            X_val=X_val,
-            y_val=y_val,
-            population_size=cfg["population_size"],
-            generations=cfg["generations"],
-            mutation_rate=cfg["mutation_rate"],
-            elite_k=min(5, cfg["population_size"]),
-            metric_weights=metric_weights,
-            verbose=verbose
-        )
+        # Utilização do PerformanceTracker para medir tempo e recursos de cada experimento
+        with PerformanceTracker(f"ga_experiment.{model_type}.exp_{idx}", logger):
+            model, params, fitness_score, metrics = genetic_algorithm(
+                model_type=model_type,
+                X_train=X_train,
+                y_train=y_train,
+                X_val=X_val,
+                y_val=y_val,
+                population_size=cfg["population_size"],
+                generations=cfg["generations"],
+                mutation_rate=cfg["mutation_rate"],
+                elite_k=min(5, cfg["population_size"]),
+                metric_weights=metric_weights,
+                verbose=verbose
+            )
 
         experiment_results.append(
             {

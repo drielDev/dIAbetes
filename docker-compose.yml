@@ -1,0 +1,48 @@
+version: "3.8"
+
+# Definição dos serviços (containers) a serem executados
+services:
+  ml-pipeline:
+    # Configuração do build da imagem Docker
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: diabetes-ml-pipeline
+    # Reinicia automaticamente até 3 vezes em caso de falha
+    restart: on-failure:3
+
+    # Limites de recursos do container
+    # Valores definidos com base nas métricas de /metrics/run_*.json
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"      # Máximo de 4 CPUs
+          memory: 4G        # Máximo de 4GB de RAM
+        reservations:
+          cpus: "1.0"       # Mínimo garantido: 1 CPU
+          memory: 1G        # Mínimo garantido: 1GB RAM
+
+    # Mapeamento de pastas do host para o container
+    volumes:
+      - ./logs:/app/logs        # Logs salvos na pasta local
+      - ./metrics:/app/metrics  # Métricas salvas na pasta local
+
+    # Variáveis de ambiente
+    environment:
+      - PYTHONUNBUFFERED=1  # Força exibição de logs em tempo real
+
+    # Verificação de saúde do container
+    healthcheck:
+      test: ["CMD", "python", "-c", "import psutil; assert psutil.cpu_percent() < 99"]
+      interval: 30s      # Verifica a cada 30 segundos
+      timeout: 10s       # Timeout de 10s para resposta
+      start_period: 5s   # Período de espera antes de iniciar verificações
+      retries: 3         # Tentativas antes de marcar como unhealthy
+
+    # Configuração do sistema de logs do Docker
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"   # Tamanho máximo de 10MB por arquivo
+        max-file: "5"     # Máximo de 5 arquivos de log mantidos
+        tag: "diabetes-pipeline"  # Tag para identificação dos logs
