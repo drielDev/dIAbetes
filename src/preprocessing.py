@@ -8,6 +8,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
+# Importação do sistema de monitoramento para acompanhar o desempenho
+from monitoring import get_logger, PerformanceTracker
+
+# Logger específico para o módulo de preprocessamento
+logger = get_logger("preprocessing")
+
 
 # Resolve project root dynamically
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,7 +25,12 @@ def load_data(filename: str) -> pd.DataFrame:
     Load diabetes dataset from CSV file.
     """
     file_path = DATA_DIR / filename
-    return pd.read_csv(file_path)
+    # Registro do carregamento dos dados
+    logger.info(f"Loading data from {file_path}")
+    df = pd.read_csv(file_path)
+    # Log do número de linhas e colunas carregadas
+    logger.info(f"Loaded {len(df)} rows, {len(df.columns)} columns")
+    return df
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -36,8 +47,13 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
     df = df.copy()
+    # Contagem de zeros antes da limpeza para documentação
+    nan_counts = (df[cols_with_zero] == 0).sum()
+    logger.info(f"Zero-value counts before cleaning: {nan_counts.to_dict()}")
     df[cols_with_zero] = df[cols_with_zero].replace(0, np.nan)
     df[cols_with_zero] = df[cols_with_zero].fillna(df[cols_with_zero].median())
+    # Registro de conclusão da limpeza
+    logger.info("Data cleaning completed (zeros replaced + median imputation)")
 
     return df
 
@@ -96,19 +112,31 @@ def preprocess_data(filename: str = "diabetes.csv"):
     - split dataset
     - scale features
     """
-    df = load_data(filename)
-    df = clean_data(df)
+    # Utilização do PerformanceTracker para medir tempo e recursos consumidos
+    with PerformanceTracker("preprocessing.full_pipeline", logger):
+        df = load_data(filename)
+        df = clean_data(df)
 
-    X = df.drop("Outcome", axis=1)
-    y = df["Outcome"]
+        X = df.drop("Outcome", axis=1)
+        y = df["Outcome"]
 
-    X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y)
+        # Log da distribuição das classes para verificar balanceamento
+        logger.info(f"Class distribution: {y.value_counts().to_dict()}")
 
-    preprocessor = build_preprocessing_pipeline(X.columns.tolist())
+        X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y)
+        # Registro dos tamanhos dos conjuntos (treino, validação e teste)
+        logger.info(
+            f"Split sizes — train: {len(X_train)}, "
+            f"val: {len(X_val)}, test: {len(X_test)}"
+        )
 
-    X_train_scaled = preprocessor.fit_transform(X_train)
-    X_val_scaled = preprocessor.transform(X_val)
-    X_test_scaled = preprocessor.transform(X_test)
+        preprocessor = build_preprocessing_pipeline(X.columns.tolist())
+
+        X_train_scaled = preprocessor.fit_transform(X_train)
+        X_val_scaled = preprocessor.transform(X_val)
+        X_test_scaled = preprocessor.transform(X_test)
+        # Confirmação da conclusão da normalização
+        logger.info("Feature scaling completed")
 
     return (
         X_train_scaled,

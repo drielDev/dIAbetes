@@ -1,3 +1,7 @@
+# Monitoring logs and metrics
+logs/
+metrics/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
