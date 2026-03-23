@@ -134,6 +134,7 @@ def train_models():
         "best_model": best_model,
         "test_metrics": test_metrics,
         "val_metrics": results_val[best_model_name],
+        "scaler": _
     }
 
 

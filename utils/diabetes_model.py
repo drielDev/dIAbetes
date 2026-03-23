@@ -25,6 +25,7 @@ def carregar_modelo():
         "modelo": info["best_model"],
         "nome_modelo": info["best_model_name"],
         "metricas": info["test_metrics"],  # 🔥 agora usa TEST
+        "scaler": info["scaler"],
     })
 
     return _model_cache
@@ -33,11 +34,11 @@ def carregar_modelo():
 def prever(dados_paciente: dict) -> dict:
     cache = carregar_modelo()
     modelo = cache["modelo"]
-
+    scaler = cache["scaler"]
     df = pd.DataFrame([dados_paciente])
     X = df[FEATURE_NAMES]
-
-    pred = int(modelo.predict(X)[0])
+    X_scaled = scaler.transform(X)
+    pred = int(modelo.predict(X_scaled)[0])
 
     if hasattr(modelo, "predict_proba"):
         prob = float(modelo.predict_proba(X)[0][1])
