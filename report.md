@@ -72,7 +72,7 @@ O melhor resultado foi obtido no Experimento 3, que apresentou o maior recall no
 
 ## 6.2 Integração com LLM
 
-A abordagem utilizada foi a utilização do client oficial do google gemini para comunicação, encapsulando as chamadas ao modelo em um service dedicado. O fluxo é entrada → construção do prompt → chamada ao modelo → pós-processamento → resposta, mantendo histórico no chat. A arquitetur está distribuida nas camadas aplicação, serviço LLM e SDK. Os prompts utilizados foram zero-shot (instruções diretas para tarefas simples), instruction-based (definição clara de papel, contexto e formato de saída), context injection (inclusão de dados/documentos para grounding) e multi-turn (manutenção de contexto entre interações). O modelo apresentou qualidade satisfatória, sendo capaz de trazer detalhamento relevante de dados de exames, apesar de resultados um pouco inferiores à acurácia do modelo. Isso foi constatado por revisão e testes manuais.
+A abordagem utilizada foi a utilização do client oficial do google gemini para comunicação, encapsulando as chamadas ao modelo em um service dedicado. O fluxo é entrada → construção do prompt → chamada ao modelo → pós-processamento → resposta, mantendo histórico no chat. Os prompts utilizados foram zero-shot (instruções diretas para tarefas simples), instruction-based (definição clara de papel, contexto e formato de saída), context injection (inclusão de dados/documentos para grounding) e multi-turn (manutenção de contexto entre interações). O modelo apresentou qualidade satisfatória, sendo capaz de trazer detalhamento relevante de dados de exames, mantendo a acurácia do modelo. Isso foi constatado por revisão e testes manuais.
 
 ## 7. Avaliação
 

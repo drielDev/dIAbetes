@@ -9,7 +9,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
 # Importação do sistema de monitoramento para acompanhar o desempenho
-from monitoring import get_logger, PerformanceTracker
+from src.monitoring import get_logger, PerformanceTracker
 
 # Logger específico para o módulo de preprocessamento
 logger = get_logger("preprocessing")

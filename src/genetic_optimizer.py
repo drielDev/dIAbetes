@@ -5,9 +5,9 @@ from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, recall_score, f1_score
 
-from preprocessing import preprocess_data
+from src.preprocessing import preprocess_data
 # Importação de ferramentas de monitoramento para rastrear performance do algoritmo genético
-from monitoring import get_logger, PerformanceTracker
+from src.monitoring import get_logger, PerformanceTracker
 
 # Logger específico para o otimizador genético
 logger = get_logger("genetic_optimizer")
