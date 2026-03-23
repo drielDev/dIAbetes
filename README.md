@@ -90,8 +90,13 @@ ferramenta de apoio à decisão clínica.
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
+cd dIAbetes
 pip install -r requirements.txt
 
+## aplicação
 python src/train.py
+
+## LLM
+cd ..
+streamlit run app.py
 ```
